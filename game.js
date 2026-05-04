@@ -171,7 +171,7 @@ class Demo3 extends AdventureScene {
         let table = this.add.image(700, 500, 'bench')
             .setInteractive()
             .on('pointerover', () => {
-                if(this.hasItem("nails" && "hammer")) {
+                if(this.hasItem("nails") && this.hasItem("hammer")) {
                     this.showMessage("You've got the tools to build the ladder.");
                 } else {
                     this.showMessage("You need nails and a hammer to build the ladder.");
@@ -260,6 +260,8 @@ class Intro extends Phaser.Scene {
     }
 
     create() {
+        this.scene.start('outro');
+
         this.add.text(50, 50, "The Basement").setFontSize(50);
         this.add.text(50,100, "Click anywhere to begin.").setFontSize(20);
         this.input.on('pointerdown', () => {
@@ -277,6 +279,44 @@ class Outro extends Phaser.Scene {
         this.add.text(50, 50, "You have escaped the basement!").setFontSize(50);
         this.add.text(50, 100, "Click anywhere to restart.").setFontSize(20);
         this.input.on('pointerdown', () => this.scene.start('intro'));
+        
+        this.time.addEvent({
+            delay:800,
+            loop: true,
+            callback: this.launchFirework,
+            callbackScope: this
+        });
+
+    }
+    launchFirework(){
+        //random position across the screen
+        const x = Phaser.Math.Between(0, 1920);
+        const y = Phaser.Math.Between(0, 1080);
+
+        //random color
+        const colors = [0xff4444, 0xffaa00, 0x44ff44, 0x4444ff, 0xff44ff, 0x44ffff, 0xffffff];
+        const color = Phaser.Utils.Array.GetRandom(colors);
+
+        //shoout out 20 particles in all directions
+        for(let i = 0; i < 60; i++){
+            const angle = (i / 60) * Math.PI * 2; //spread evenly in a circle
+            const speed = Phaser.Math.Between(300, 600);
+
+            const dot = this.add.circle(x, y, 20, color);
+
+            //each particle flies outward then fades
+            this.tweens.add({
+                targets: dot,
+                x: x + Math.cos(angle) * speed,
+                y: y + Math.sin(angle) * speed,
+                alpha: 0,
+                scaleX: 0.2,
+                scaleY: 0.2,
+                duration: Phaser.Math.Between(600, 1000),
+                ease: 'Power2',
+                onComplete: () => dot.destroy() //clean up when done
+            });
+        }
     }
 }
 
