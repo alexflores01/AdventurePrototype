@@ -260,8 +260,6 @@ class Intro extends Phaser.Scene {
     }
 
     create() {
-        this.scene.start('outro');
-
         this.add.text(50, 50, "The Basement").setFontSize(50);
         this.add.text(50,100, "Click anywhere to begin.").setFontSize(20);
         this.input.on('pointerdown', () => {
@@ -326,7 +324,7 @@ const game = new Phaser.Game({
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
         width: 1920,
-        height: 1080
+        height: 1080,
     },
     scene: [Intro, Demo1, Demo2, Demo3, Demo4, Outro],
     title: "Adventure Game",
